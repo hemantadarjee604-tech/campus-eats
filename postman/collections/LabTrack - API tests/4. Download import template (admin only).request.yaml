@@ -1,0 +1,18 @@
+$kind: http-request
+description: Run after request 2
+url: "{{baseUrl}}/admin/import/template"
+method: GET
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Import template downloads as a CSV file (admin only feature)", function () {
+          pm.response.to.have.status(200);
+          pm.expect(pm.response.headers.get("Content-Type")).to.include("text/csv");
+          pm.expect(pm.response.headers.get("Content-Disposition")).to.include("attachment");
+      });
+      pm.test("Template starts with the required import columns", function () {
+          const body = pm.response.text().replace(/^\uFEFF/, "");
+          pm.expect(body.split("\n")[0]).to.include("item_code,name,category");
+      });
+    language: text/javascript
+order: 5000

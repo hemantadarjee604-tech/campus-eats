@@ -1,0 +1,20 @@
+$kind: http-request
+description: Replaces the admin session with a requester session
+url: "{{baseUrl}}/login"
+method: POST
+body:
+  type: urlencoded
+  content:
+    email: "{{userEmail}}"
+    password: "{{userPassword}}"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Requester login redirects to the portal (/portal)", function () {
+          pm.response.to.have.status(302);
+          pm.expect(pm.response.headers.get("Location")).to.eql("/portal");
+      });
+    language: text/javascript
+settings:
+  followRedirects: false
+order: 1000

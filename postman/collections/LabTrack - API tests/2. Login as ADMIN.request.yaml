@@ -1,0 +1,25 @@
+$kind: http-request
+description: "Expected: 302 to /admin and a session cookie. Postman stores the cookie and sends it on the next requests."
+url: "{{baseUrl}}/login"
+method: POST
+body:
+  type: urlencoded
+  content:
+    email: "{{adminEmail}}"
+    password: "{{adminPassword}}"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Admin login redirects to the admin dashboard (/admin)", function () {
+          pm.response.to.have.status(302);
+          pm.expect(pm.response.headers.get("Location")).to.eql("/admin");
+      });
+      pm.test("A secure session cookie is issued (connect.sid, HttpOnly)", function () {
+          const sc = pm.response.headers.filter(h => h.key.toLowerCase() === "set-cookie").map(h => h.value).join(";");
+          pm.expect(sc).to.include("connect.sid");
+          pm.expect(sc.toLowerCase()).to.include("httponly");
+      });
+    language: text/javascript
+settings:
+  followRedirects: false
+order: 3000

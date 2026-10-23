@@ -1,0 +1,8 @@
+$kind: collection
+description: 5 important checks. Start the server (npm run dev) with the database seeded, then run this collection in order with the Collection Runner.
+variables:
+  baseUrl: http://localhost:3000
+  adminEmail: admin@labtrack.test
+  adminPassword: Admin@123
+  userEmail: student@labtrack.test
+  userPassword: User@123

@@ -1,0 +1,17 @@
+$kind: http-request
+description: Run after request 2
+url: "{{baseUrl}}/admin"
+method: GET
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Logged-in admin can open the dashboard (200)", function () {
+          pm.response.to.have.status(200);
+          pm.expect(pm.response.text()).to.include("Needs attention");
+      });
+      pm.test("Dashboard shows the stock statistics", function () {
+          pm.expect(pm.response.text()).to.include("Total items");
+          pm.expect(pm.response.text()).to.include("Low stock");
+      });
+    language: text/javascript
+order: 4000
